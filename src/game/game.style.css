@@ -1,0 +1,109 @@
+:root {
+  --area-columns: 12;
+  --area-rows: 21;
+  --cell-size: calc(100vh / var(--area-rows));
+  --area-cell-border-color: rgba(255, 255, 255, 0.1);
+  --element-border-color-light: rgba(255, 255, 255, 0.5);
+  --element-border-color-dark: rgba(0, 0, 0, 0.2);
+  --dark-bg: #2d2c3b;
+  --page-bg: #403e54;
+  --game-area-bg: var(--dark-bg);
+  --game-area-overlay-bg: rgba(0, 0, 0, 0.7);
+  --text-color: #8e8e8e;
+  --game-popup-bg: #454459;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  color: var(--text-color);
+  font-size: 150%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background: var(--page-bg);
+  margin: 0;
+}
+
+.game-popup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--game-area-overlay-bg);
+}
+
+.game-popup {
+  padding: 30px;
+  min-width: 320px;
+  background-color: var(--game-popup-bg);
+}
+
+.game-layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) auto minmax(200px, 1fr);
+  gap: 24px;
+}
+
+.game-area {
+  background-color: var(--game-area-bg);
+  display: grid;
+  grid-template-columns: repeat(var(--area-columns), var(--cell-size));
+  grid-template-rows: repeat(var(--area-rows), var(--cell-size));
+  column-gap: 0;
+}
+
+.game-area:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 3px #eee;
+}
+
+.area-cell {
+  border: 1px solid var(--area-cell-border-color);
+}
+
+.area-cell.element {
+  border: 5px solid;
+  border-top-color: var(--element-border-color-light);
+  border-bottom-color: var(--element-border-color-dark);
+  border-left-color: var(--element-border-color-light);
+  border-right-color: var(--element-border-color-dark);
+  background: currentColor;
+}
+
+.area-cell.cyan {
+  color: cyan;
+}
+
+.area-cell.blue {
+  color: #5d8bff;
+}
+
+.area-cell.orange {
+  color: orange;
+}
+
+.area-cell.yellow {
+  color: #f9e700;
+}
+
+.area-cell.green {
+  color: greenyellow;
+}
+
+.area-cell.pink {
+  color: #ff9cc1;
+}
+
+.area-cell.red {
+  color: #ff4d4d;
+}
