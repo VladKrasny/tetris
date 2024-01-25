@@ -40,7 +40,7 @@ export class GameStore {
     });
   }
 
-  @computed get _canFallingBlockMoveRigth() {
+  @computed get _canFallingBlockMoveRight() {
     return !this._fallingBlock.coordinatesOnCanvas.some(([x]) => {
       return x >= this.#COLUMNS - 1;
     });
@@ -60,8 +60,8 @@ export class GameStore {
   }
 
   @action moveBlockRight() {
-    if (this._canFallingBlockMoveRigth) {
-      this._fallingBlock.moveRigth();
+    if (this._canFallingBlockMoveRight) {
+      this._fallingBlock.moveRight();
       this._updateCanvas();
     }
   }

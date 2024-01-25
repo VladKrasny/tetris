@@ -84,7 +84,7 @@ export class Block {
     this._offsetX = this._offsetX - 1;
   }
 
-  @action moveRigth() {
+  @action moveRight() {
     this._offsetX = this._offsetX + 1;
   }
 
