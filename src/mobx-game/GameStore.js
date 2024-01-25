@@ -101,6 +101,16 @@ export class GameStore {
     this._updateCanvas();
   }
 
+  @action dropBlock() {
+    while (this._canFallingBlockMoveDown) {
+      this._fallingBlock.moveDown();
+    }
+
+    this._pushFallingBlockToBackgroundCanvas();
+    this._spawnBlock();
+    this._updateCanvas();
+  }
+
   @action _spawnBlock() {
     this._fallingBlock = BlockFactory.createRandom();
 

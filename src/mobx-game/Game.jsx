@@ -48,7 +48,7 @@ export const Game = observer(() => {
    */
   function handleKeyUp(event) {
     if (event.key === " ") {
-      // TODO
+      return game.dropBlock();
     }
   }
 
