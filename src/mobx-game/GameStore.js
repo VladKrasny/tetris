@@ -16,17 +16,20 @@ export class GameStore {
   @observable accessor _mainCanvas;
 
   /**
+   * @type {Canvas}
+   */
+  @observable accessor _backgroundCanvas;
+
+  /**
    * @type {Block}
    */
   @observable accessor _fallingBlock;
 
   constructor() {
     this._mainCanvas = this._createEmptyCanvas();
+    this._backgroundCanvas = this._createEmptyCanvas();
 
-    this._fallingBlock = BlockFactory.createRandom();
-
-    this._fallingBlock.spawn(this.#COLUMNS);
-
+    this._spawnBlock();
     this._updateCanvas();
   }
 
@@ -35,21 +38,42 @@ export class GameStore {
   }
 
   @computed get _canFallingBlockMoveLeft() {
-    return !this._fallingBlock.coordinatesOnCanvas.some(([x]) => {
-      return x === 0;
-    });
+    const isBlockReachLeftEdge = !this._fallingBlock.coordinatesOnCanvas.some(
+      ([x]) => x === 0
+    );
+
+    const isBlockReachBackgroundCanvasOnLeft =
+      this._checkIsFallingBlockIntersectBackgroundCanvas({
+        offsetX: -1,
+      });
+
+    return isBlockReachLeftEdge && isBlockReachBackgroundCanvasOnLeft;
   }
 
   @computed get _canFallingBlockMoveRight() {
-    return !this._fallingBlock.coordinatesOnCanvas.some(([x]) => {
-      return x >= this.#COLUMNS - 1;
-    });
+    const isBlockReachRightEdge = !this._fallingBlock.coordinatesOnCanvas.some(
+      ([x]) => x >= this.#COLUMNS - 1
+    );
+
+    const isBlockReachBackgroundCanvasOnRight =
+      this._checkIsFallingBlockIntersectBackgroundCanvas({
+        offsetX: 1,
+      });
+
+    return isBlockReachRightEdge && isBlockReachBackgroundCanvasOnRight;
   }
 
   @computed get _canFallingBlockMoveDown() {
-    return !this._fallingBlock.coordinatesOnCanvas.some(([x, y]) => {
-      return y >= this.#ROWS - 1;
-    });
+    const isBlockReachBottomEdge = !this._fallingBlock.coordinatesOnCanvas.some(
+      ([x, y]) => y >= this.#ROWS - 1
+    );
+
+    const isBlockReachBackgroundCanvasAtBottom =
+      this._checkIsFallingBlockIntersectBackgroundCanvas({
+        offsetY: 1,
+      });
+
+    return isBlockReachBottomEdge && isBlockReachBackgroundCanvasAtBottom;
   }
 
   @action moveBlockLeft() {
@@ -69,16 +93,34 @@ export class GameStore {
   @action moveBlockDown() {
     if (this._canFallingBlockMoveDown) {
       this._fallingBlock.moveDown();
-      this._updateCanvas();
+    } else {
+      this._pushFallingBlockToBackgroundCanvas();
+      this._spawnBlock();
     }
+
+    this._updateCanvas();
+  }
+
+  @action _spawnBlock() {
+    this._fallingBlock = BlockFactory.createRandom();
+
+    this._fallingBlock.spawn(this.#COLUMNS);
   }
 
   @action _updateCanvas() {
-    this._mainCanvas = this._createEmptyCanvas();
+    this._mainCanvas = JSON.parse(JSON.stringify(this._backgroundCanvas));
 
     this._fallingBlock.coordinatesOnCanvas.forEach(([x, y]) => {
       if (x >= 0 && y >= 0) {
         this._mainCanvas[y][x] = this._fallingBlock.color;
+      }
+    });
+  }
+
+  @action _pushFallingBlockToBackgroundCanvas() {
+    this._fallingBlock.coordinatesOnCanvas.forEach(([x, y]) => {
+      if (x >= 0 && y >= 0) {
+        this._backgroundCanvas[y][x] = this._fallingBlock.color;
       }
     });
   }
@@ -88,5 +130,14 @@ export class GameStore {
    */
   _createEmptyCanvas() {
     return new Array(this.#ROWS).fill(new Array(this.#COLUMNS).fill(0));
+  }
+
+  _checkIsFallingBlockIntersectBackgroundCanvas({
+    offsetX = 0,
+    offsetY = 0,
+  } = {}) {
+    return !this._fallingBlock.coordinatesOnCanvas.some(([x, y]) => {
+      return Boolean(this._backgroundCanvas[y + offsetY]?.[x + offsetX]);
+    });
   }
 }
