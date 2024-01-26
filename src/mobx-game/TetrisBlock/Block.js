@@ -42,20 +42,16 @@ export class Block {
     return this._color;
   }
 
-  @computed get width() {
-    return this._shape[0].length;
-  }
-
-  @computed get height() {
-    return this._shape.length;
-  }
-
-  @computed get offsetX() {
+  @computed get leftEdgeOnCanvas() {
     return this._offsetX;
   }
 
-  @computed get offsetY() {
-    return this._offsetY;
+  @computed get rightEdgeOnCanvas() {
+    return this._offsetX + this._width;
+  }
+
+  @computed get bottomEdgeOnCanvas() {
+    return this._offsetY + this._height;
   }
 
   /**
@@ -75,9 +71,17 @@ export class Block {
     return result;
   }
 
+  @computed get _width() {
+    return this._shape[0].length;
+  }
+
+  @computed get _height() {
+    return this._shape.length;
+  }
+
   @action spawn(columns) {
-    this._offsetX = Math.floor((columns - this.width) / 2);
-    this._offsetY = this.height * -1;
+    this._offsetX = Math.floor((columns - this._width) / 2);
+    this._offsetY = this._height * -1;
   }
 
   @action moveLeft() {

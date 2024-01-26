@@ -38,42 +38,39 @@ export class GameStore {
   }
 
   @computed get _canFallingBlockMoveLeft() {
-    const isBlockReachLeftEdge = !this._fallingBlock.coordinatesOnCanvas.some(
-      ([x]) => x === 0
-    );
+    const isTouchingMainCanvasOnLeft =
+      this._fallingBlock.leftEdgeOnCanvas === 0;
 
-    const isBlockReachBackgroundCanvasOnLeft =
+    const isTouchingBackgroundCanvasOnLeft =
       this._checkIsFallingBlockIntersectBackgroundCanvas({
         offsetX: -1,
       });
 
-    return isBlockReachLeftEdge && isBlockReachBackgroundCanvasOnLeft;
+    return !isTouchingMainCanvasOnLeft && !isTouchingBackgroundCanvasOnLeft;
   }
 
   @computed get _canFallingBlockMoveRight() {
-    const isBlockReachRightEdge = !this._fallingBlock.coordinatesOnCanvas.some(
-      ([x]) => x >= this.#COLUMNS - 1
-    );
+    const isTouchingMainCanvasOnRight =
+      this._fallingBlock.rightEdgeOnCanvas === this.#COLUMNS;
 
-    const isBlockReachBackgroundCanvasOnRight =
+    const isTouchingBackgroundCanvasOnRight =
       this._checkIsFallingBlockIntersectBackgroundCanvas({
         offsetX: 1,
       });
 
-    return isBlockReachRightEdge && isBlockReachBackgroundCanvasOnRight;
+    return !isTouchingMainCanvasOnRight && !isTouchingBackgroundCanvasOnRight;
   }
 
   @computed get _canFallingBlockMoveDown() {
-    const isBlockReachBottomEdge = !this._fallingBlock.coordinatesOnCanvas.some(
-      ([x, y]) => y >= this.#ROWS - 1
-    );
+    const isTouchingMainCanvasAtBottom =
+      this._fallingBlock.bottomEdgeOnCanvas === this.#ROWS;
 
-    const isBlockReachBackgroundCanvasAtBottom =
+    const isTouchingBackgroundCanvasAtBottom =
       this._checkIsFallingBlockIntersectBackgroundCanvas({
         offsetY: 1,
       });
 
-    return isBlockReachBottomEdge && isBlockReachBackgroundCanvasAtBottom;
+    return !isTouchingMainCanvasAtBottom && !isTouchingBackgroundCanvasAtBottom;
   }
 
   @action moveBlockLeft() {
@@ -146,7 +143,7 @@ export class GameStore {
     offsetX = 0,
     offsetY = 0,
   } = {}) {
-    return !this._fallingBlock.coordinatesOnCanvas.some(([x, y]) => {
+    return this._fallingBlock.coordinatesOnCanvas.some(([x, y]) => {
       return Boolean(this._backgroundCanvas[y + offsetY]?.[x + offsetX]);
     });
   }
