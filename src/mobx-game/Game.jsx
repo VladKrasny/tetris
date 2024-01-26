@@ -94,7 +94,9 @@ export const Game = observer(() => {
           </div>
         </div>
 
-        <div className="game-layout__end"></div>
+        <div className="game-layout__end">
+          <div>Score: {game.totalScore}</div>
+        </div>
       </div>
     </>
   );

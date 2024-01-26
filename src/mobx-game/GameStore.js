@@ -30,6 +30,11 @@ export class GameStore {
    */
   @observable accessor _isPaused;
 
+  /**
+   * @type {number}
+   */
+  @observable accessor _removedLinesCounter = 0;
+
   constructor() {
     this._mainCanvas = this._createEmptyCanvas();
     this._backgroundCanvas = this._createEmptyCanvas();
@@ -44,6 +49,10 @@ export class GameStore {
 
   @computed get isPaused() {
     return this._isPaused;
+  }
+
+  @computed get totalScore() {
+    return this._removedLinesCounter;
   }
 
   @computed get _canFallingBlockMoveLeft() {
@@ -147,10 +156,16 @@ export class GameStore {
 
   @action _removeLinesFromBackgroundCanvas() {
     this._backgroundCanvas = this._backgroundCanvas
-      .map((row) => {
-        return row.every((x) => Boolean(x))
-          ? this._createEmptyCanvasRow()
-          : row;
+      .map((canvasRow) => {
+        const isEveryColumnColored = canvasRow.every((x) => Boolean(x));
+
+        if (isEveryColumnColored) {
+          this._removedLinesCounter += 1;
+
+          return this._createEmptyCanvasRow();
+        }
+
+        return canvasRow;
       })
       .sort((row1, row2) => {
         const isRow1Empty = row1.some((x) => Boolean(x));
