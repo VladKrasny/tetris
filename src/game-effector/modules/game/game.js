@@ -1,10 +1,10 @@
-import { AREA_COLUMNS, AREA_ROWS } from "../../game.config";
+import { AREA_COLUMNS, AREA_ROWS } from "../../game.config.js";
 import {
   getRandomGameElement,
   getElementCells,
   flowGameElement,
   teleportGameElementOnY,
-} from "../game-element/game-element";
+} from "../game-element/game-element.js";
 
 /**
  * @typedef {import('../game-element/game-element.js').GameElement} GameElement

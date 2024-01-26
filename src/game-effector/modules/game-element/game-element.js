@@ -1,11 +1,11 @@
-import { AREA_COLUMNS } from "../../game.config";
+import { AREA_COLUMNS } from "../../game.config.js";
 import {
   getShapeSize,
   getRandomShape,
   rotateShapeRight,
   rotateShapeLeft,
-} from "../shape/shape";
-import { COLOR_CLASSES } from "./game-element.const";
+} from "../shape/shape.js";
+import { COLOR_CLASSES } from "./game-element.const.js";
 
 /**
  * @typedef {import('../shape/shape.js').Shape} Shape

@@ -1,4 +1,4 @@
-import * as SHAPE from "./shape.const";
+import * as SHAPE from "./shape.const.js";
 
 /**
  * @typedef {number[][]} Shape

@@ -3,14 +3,12 @@ import cn from "classnames";
 import { createStore, createEvent } from "effector";
 import { useUnit } from "effector-react";
 
-import "./game.style.css";
-
 import {
   leftGameElement,
   rightGameElement,
   rotateGameElementLeft,
   rotateGameElementRight,
-} from "../modules/game-element/game-element";
+} from "./modules/game-element/game-element.js";
 import {
   createGame,
   updateGameCanvas,
@@ -21,7 +19,7 @@ import {
   toggleGamePause,
   gameUpdate,
   teleportActiveElement,
-} from "../modules/game/game";
+} from "./modules/game/game.js";
 
 const startNewGame = createEvent();
 const gameTick = createEvent();
@@ -33,7 +31,7 @@ const rotateRight = createEvent();
 const togglePause = createEvent();
 
 /**
- * @typedef {import('../modules/game/game.js').Game} Game
+ * @typedef {import('./modules/game/game.js').Game} Game
  */
 
 /**
