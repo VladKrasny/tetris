@@ -3,10 +3,22 @@ import cn from "classnames";
 import { observer } from "mobx-react-lite";
 import { GameStore } from "./GameStore";
 
+function Popup({ children }) {
+  return (
+    <div className="game-popup-container">
+      <div className="game-popup">{children}</div>
+    </div>
+  );
+}
+
 export const Game = observer(() => {
   const [game] = useState(() => new GameStore());
 
   useEffect(() => {
+    if (game.isPaused) {
+      return;
+    }
+
     const intervalId = setInterval(() => {
       game.moveBlockDown();
     }, 1000);
@@ -14,7 +26,7 @@ export const Game = observer(() => {
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [game.isPaused]);
 
   /**
    *
@@ -38,7 +50,7 @@ export const Game = observer(() => {
     }
 
     if (event.key === "Escape") {
-      // TODO
+      return game.togglePause();
     }
   }
 
@@ -63,23 +75,27 @@ export const Game = observer(() => {
   }, []);
 
   return (
-    <div className="game-layout">
-      <div className="game-layout__start"></div>
+    <>
+      {game.isPaused ? <Popup>Paused!</Popup> : null}
 
-      <div className="game-layout__middle">
-        <div tabIndex="0" className="game-area">
-          {game.canvas.map((color, rowIndex) => {
-            return (
-              <div
-                key={rowIndex}
-                className={cn("area-cell", color, color && "element")}
-              />
-            );
-          })}
+      <div className="game-layout">
+        <div className="game-layout__start"></div>
+
+        <div className="game-layout__middle">
+          <div tabIndex="0" className="game-area">
+            {game.canvas.map((color, rowIndex) => {
+              return (
+                <div
+                  key={rowIndex}
+                  className={cn("area-cell", color, color && "element")}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      <div className="game-layout__end"></div>
-    </div>
+        <div className="game-layout__end"></div>
+      </div>
+    </>
   );
 });

@@ -25,6 +25,11 @@ export class GameStore {
    */
   @observable accessor _fallingBlock;
 
+  /**
+   * @type {boolean}
+   */
+  @observable accessor _isPaused;
+
   constructor() {
     this._mainCanvas = this._createEmptyCanvas();
     this._backgroundCanvas = this._createEmptyCanvas();
@@ -35,6 +40,10 @@ export class GameStore {
 
   @computed get canvas() {
     return this._mainCanvas.flat();
+  }
+
+  @computed get isPaused() {
+    return this._isPaused;
   }
 
   @computed get _canFallingBlockMoveLeft() {
@@ -74,11 +83,19 @@ export class GameStore {
   }
 
   @action rotateBlock() {
+    if (this.isPaused) {
+      return;
+    }
+
     this._fallingBlock.rotateClockwise();
     this._updateCanvas();
   }
 
   @action moveBlockLeft() {
+    if (this.isPaused) {
+      return;
+    }
+
     if (this._canFallingBlockMoveLeft) {
       this._fallingBlock.moveLeft();
       this._updateCanvas();
@@ -86,6 +103,10 @@ export class GameStore {
   }
 
   @action moveBlockRight() {
+    if (this.isPaused) {
+      return;
+    }
+
     if (this._canFallingBlockMoveRight) {
       this._fallingBlock.moveRight();
       this._updateCanvas();
@@ -93,6 +114,10 @@ export class GameStore {
   }
 
   @action moveBlockDown() {
+    if (this.isPaused) {
+      return;
+    }
+
     if (this._canFallingBlockMoveDown) {
       this._fallingBlock.moveDown();
     } else {
@@ -104,11 +129,19 @@ export class GameStore {
   }
 
   @action dropBlock() {
+    if (this.isPaused) {
+      return;
+    }
+
     while (this._canFallingBlockMoveDown) {
       this._fallingBlock.moveDown();
     }
 
     this.moveBlockDown();
+  }
+
+  @action togglePause() {
+    this._isPaused = !this._isPaused;
   }
 
   @action _spawnBlock() {
