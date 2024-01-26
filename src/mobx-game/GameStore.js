@@ -122,6 +122,7 @@ export class GameStore {
       this._fallingBlock.moveDown();
     } else {
       this._pushFallingBlockToBackgroundCanvas();
+      this._removeLinesFromBackgroundCanvas();
       this._spawnBlock();
     }
 
@@ -142,6 +143,31 @@ export class GameStore {
 
   @action togglePause() {
     this._isPaused = !this._isPaused;
+  }
+
+  @action _removeLinesFromBackgroundCanvas() {
+    this._backgroundCanvas = this._backgroundCanvas
+      .map((row) => {
+        return row.every((x) => Boolean(x))
+          ? this._createEmptyCanvasRow()
+          : row;
+      })
+      .sort((row1, row2) => {
+        const isRow1Empty = row1.some((x) => Boolean(x));
+        const isRow2Empty = row2.some((x) => Boolean(x));
+
+        if (isRow1Empty && isRow2Empty) {
+          return 0;
+        }
+
+        if (isRow1Empty && !isRow2Empty) {
+          return 1;
+        }
+
+        if (isRow2Empty && !isRow1Empty) {
+          return -1;
+        }
+      });
   }
 
   @action _spawnBlock() {
@@ -172,7 +198,14 @@ export class GameStore {
    * @return {Canvas}
    */
   _createEmptyCanvas() {
-    return new Array(this.#ROWS).fill(new Array(this.#COLUMNS).fill(0));
+    return new Array(this.#ROWS).fill(this._createEmptyCanvasRow());
+  }
+
+  /**
+   * @return {0[]}
+   */
+  _createEmptyCanvasRow() {
+    return new Array(this.#COLUMNS).fill(0);
   }
 
   _checkIsFallingBlockIntersectBackgroundCanvas({
