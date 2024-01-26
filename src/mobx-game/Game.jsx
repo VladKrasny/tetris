@@ -34,7 +34,7 @@ export const Game = observer(() => {
     }
 
     if (event.key === "ArrowUp") {
-      // TODO
+      return game.rotateBlock();
     }
 
     if (event.key === "Escape") {

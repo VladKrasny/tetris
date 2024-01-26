@@ -1,8 +1,8 @@
 import { action, computed, observable } from "mobx";
+import { BlockShape } from "./BlockShape";
 
 /**
- * @typedef {0 | 1} Bool
- * @typedef {Bool[][]} BlockShape
+ * @typedef {import('./BlockShape').ShapeStructure} ShapeStructure
  */
 
 export class Block {
@@ -27,15 +27,13 @@ export class Block {
   @observable accessor _offsetY;
 
   /**
-   * @param {BlockShape} shape
+   * @param {ShapeStructure} shapeStructure
+   * @param {string} color
    */
-  constructor(shape, color) {
-    this._shape = shape;
-    this._color = color;
-  }
+  constructor(shapeStructure, color) {
+    this._shape = new BlockShape("clockwise", shapeStructure);
 
-  @computed get shape() {
-    return this._shape;
+    this._color = color;
   }
 
   @computed get color() {
@@ -60,7 +58,7 @@ export class Block {
   @computed get coordinatesOnCanvas() {
     const result = [];
 
-    this._shape.forEach((row, indexY) => {
+    this._shape.structure.forEach((row, indexY) => {
       row.forEach((col, indexX) => {
         if (col === 1) {
           result.push([this._offsetX + indexX, this._offsetY + indexY]);
@@ -72,11 +70,11 @@ export class Block {
   }
 
   @computed get _width() {
-    return this._shape[0].length;
+    return this._shape.structure[0].length;
   }
 
   @computed get _height() {
-    return this._shape.length;
+    return this._shape.structure.length;
   }
 
   @action spawn(columns) {
@@ -97,18 +95,10 @@ export class Block {
   }
 
   @action rotateClockwise() {
-    const updatedShape = [];
+    this._shape.rotateForward();
+  }
 
-    for (let col = 0; col < this.width; col += 1) {
-      const nextRow = [];
-
-      for (let row = this.height - 1; row >= 0; row -= 1) {
-        nextRow.push(this._shape[row][col]);
-      }
-
-      updatedShape.push(nextRow);
-    }
-
-    this._shape = updatedShape;
+  @action rotateCounterclockwise() {
+    this._shape.rotateBackward();
   }
 }

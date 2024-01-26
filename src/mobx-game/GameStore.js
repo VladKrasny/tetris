@@ -73,6 +73,11 @@ export class GameStore {
     return !isTouchingMainCanvasAtBottom && !isTouchingBackgroundCanvasAtBottom;
   }
 
+  @action rotateBlock() {
+    this._fallingBlock.rotateClockwise();
+    this._updateCanvas();
+  }
+
   @action moveBlockLeft() {
     if (this._canFallingBlockMoveLeft) {
       this._fallingBlock.moveLeft();
@@ -103,9 +108,7 @@ export class GameStore {
       this._fallingBlock.moveDown();
     }
 
-    this._pushFallingBlockToBackgroundCanvas();
-    this._spawnBlock();
-    this._updateCanvas();
+    this.moveBlockDown();
   }
 
   @action _spawnBlock() {
