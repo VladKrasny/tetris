@@ -21,7 +21,7 @@ export const Game = observer(() => {
 
     const intervalId = setInterval(() => {
       game.moveBlockDown();
-    }, 1000);
+    }, 480);
 
     return () => {
       clearInterval(intervalId);
@@ -92,7 +92,7 @@ export const Game = observer(() => {
       {game.isPaused ? <Popup>Paused!</Popup> : null}
 
       <div className="game-layout">
-        <div className="game-layout__start"></div>
+        <div className="game-layout__start" />
 
         <div className="game-layout__middle">
           <div tabIndex="0" className="game-area">
