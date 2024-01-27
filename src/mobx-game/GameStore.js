@@ -28,7 +28,7 @@ export class GameStore {
   /**
    * @type {boolean}
    */
-  @observable accessor _isPaused;
+  @observable accessor _isPaused = false;
 
   /**
    * @type {number}
@@ -36,11 +36,7 @@ export class GameStore {
   @observable accessor _removedLinesCounter = 0;
 
   constructor() {
-    this._mainCanvas = this._createEmptyCanvas();
-    this._backgroundCanvas = this._createEmptyCanvas();
-
-    this._spawnBlock();
-    this._updateCanvas();
+    this.start();
   }
 
   @computed get canvas() {
@@ -51,8 +47,19 @@ export class GameStore {
     return this._isPaused;
   }
 
+  @computed get isGameOver() {
+    const isBlockStuck = !this._canFallingBlockMoveDown;
+    const isBlockOutOfCanvas = this._fallingBlock.bottomEdgeOnCanvas <= 0;
+
+    return isBlockStuck && isBlockOutOfCanvas;
+  }
+
   @computed get totalScore() {
     return this._removedLinesCounter;
+  }
+
+  @computed get _areControlsDisabled() {
+    return this.isPaused || this.isGameOver;
   }
 
   @computed get _canFallingBlockMoveLeft() {
@@ -91,8 +98,16 @@ export class GameStore {
     return !isTouchingMainCanvasAtBottom && !isTouchingBackgroundCanvasAtBottom;
   }
 
+  @action start() {
+    this._mainCanvas = this._createEmptyCanvas();
+    this._backgroundCanvas = this._createEmptyCanvas();
+
+    this._spawnBlock();
+    this._updateCanvas();
+  }
+
   @action rotateBlock() {
-    if (this.isPaused) {
+    if (this._areControlsDisabled) {
       return;
     }
 
@@ -101,7 +116,7 @@ export class GameStore {
   }
 
   @action moveBlockLeft() {
-    if (this.isPaused) {
+    if (this._areControlsDisabled) {
       return;
     }
 
@@ -112,7 +127,7 @@ export class GameStore {
   }
 
   @action moveBlockRight() {
-    if (this.isPaused) {
+    if (this._areControlsDisabled) {
       return;
     }
 
@@ -123,7 +138,7 @@ export class GameStore {
   }
 
   @action moveBlockDown() {
-    if (this.isPaused) {
+    if (this._areControlsDisabled) {
       return;
     }
 
@@ -139,7 +154,7 @@ export class GameStore {
   }
 
   @action dropBlock() {
-    if (this.isPaused) {
+    if (this._areControlsDisabled) {
       return;
     }
 
@@ -151,6 +166,10 @@ export class GameStore {
   }
 
   @action togglePause() {
+    if (this.isGameOver) {
+      return;
+    }
+
     this._isPaused = !this._isPaused;
   }
 

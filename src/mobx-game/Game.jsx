@@ -74,8 +74,21 @@ export const Game = observer(() => {
     };
   }, []);
 
+  function onRestartGame() {
+    document.querySelector(".game-area").focus();
+    game.start();
+  }
+
   return (
     <>
+      {game.isGameOver && (
+        <Popup>
+          <div>Game over!</div>
+          <div>Your score: {game.totalScore}</div>
+          <button onClick={onRestartGame}>Start New Game</button>
+        </Popup>
+      )}
+
       {game.isPaused ? <Popup>Paused!</Popup> : null}
 
       <div className="game-layout">
@@ -96,6 +109,7 @@ export const Game = observer(() => {
 
         <div className="game-layout__end">
           <div>Score: {game.totalScore}</div>
+          <button onClick={onRestartGame}>Restart Game</button>
         </div>
       </div>
     </>
